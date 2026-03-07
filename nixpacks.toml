@@ -1,5 +1,12 @@
+# nixpacks.toml - Install system dependencies on Railway
 [phases.setup]
-aptPkgs = ["yt-dlp", "ffmpeg", "python3"]
+nixPkgs = ["ffmpeg", "python310", "pip"]
+
+[phases.install]
+cmds = [
+  "pip install yt-dlp",
+  "npm install"
+]
 
 [start]
 cmd = "node server.js"

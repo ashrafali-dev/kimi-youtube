@@ -1,0 +1,14 @@
+# railway.toml - Railway Deployment Config
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "node server.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[environments.production.variables]
+PORT = "3000"
+NODE_ENV = "production"

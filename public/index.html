@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>YouTube Automation Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a26;
+  --surface3: #22223a;
+  --accent: #ff0040;
+  --accent2: #7c3aed;
+  --accent3: #06d6a0;
+  --accent4: #ffd60a;
+  --text: #f0f0ff;
+  --text2: #9090b0;
+  --text3: #5555775;
+  --border: #2a2a40;
+  --success: #06d6a0;
+  --warning: #ffd60a;
+  --danger: #ff4060;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Hind Siliguri', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.app-header {
+  background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,0,64,0.4)} 50%{box-shadow:0 0 0 8px rgba(255,0,64,0)} }
+.header-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: blink 1.5s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* NAV TABS */
+.nav-tabs {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 61px;
+  z-index: 99;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(255,0,64,0.05);
+}
+.nav-tab .badge {
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* PANELS */
+.panel { display: none; padding: 16px; }
+.panel.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .icon { font-size: 18px; }
+
+/* INPUTS */
+.input-group { margin-bottom: 12px; }
+.input-label {
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+textarea, input[type="text"], input[type="url"], input[type="number"], select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: 'Hind Siliguri', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+textarea:focus, input:focus, select:focus {
+  border-color: var(--accent2);
+  background: var(--surface3);
+}
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+select option { background: var(--surface2); }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: 'Hind Siliguri', sans-serif;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #cc0033; }
+.btn-secondary { background: var(--surface3); color: var(--text); }
+.btn-purple { background: var(--accent2); color: white; }
+.btn-green { background: var(--accent3); color: #000; }
+.btn-yellow { background: var(--accent4); color: #000; }
+.btn-sm { padding: 7px 12px; font-size: 12px; }
+.btn-block { width: 100%; }
+.btn-icon { width: 38px; height: 38px; padding: 0; border-radius: var(--radius-sm); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+/* GRID */
+.btn-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-grid .btn { flex: 1; min-width: 100px; }
+
+/* URL LIST */
+.url-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.url-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text2);
+}
+.url-item .url-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.url-item .url-status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.status-pending { background: rgba(255,214,10,0.2); color: var(--warning); }
+.status-downloading { background: rgba(124,58,237,0.2); color: #a78bfa; }
+.status-done { background: rgba(6,214,160,0.2); color: var(--success); }
+.status-error { background: rgba(255,64,96,0.2); color: var(--danger); }
+
+/* VIDEO GRID */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+.video-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.video-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255,0,64,0.3);
+}
+.video-card.selected::before {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 2;
+}
+.video-thumb {
+  width: 100%;
+  aspect-ratio: 9/16;
+  object-fit: cover;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: var(--text2);
+  position: relative;
+}
+.video-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-thumb-placeholder {
+  width: 100%;
+  aspect-ratio: 9/16;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: var(--text2);
+  position: relative;
+}
+.video-duration {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.video-muted-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(255,0,64,0.9);
+  color: white;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+.audio-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(6,214,160,0.9);
+  color: #000;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.video-info {
+  padding: 10px;
+}
+.video-title {
+  font-size: 11px;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 6px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.video-meta {
+  font-size: 10px;
+  color: var(--text2);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.video-actions {
+  display: flex;
+  gap: 4px;
+  padding: 0 8px 8px;
+}
+.video-actions .btn { flex: 1; }
+
+/* AUDIO LIST */
+.audio-list { display: flex; flex-direction: column; gap: 8px; }
+.audio-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.audio-item.playing {
+  border-color: var(--accent3);
+  background: rgba(6,214,160,0.05);
+}
+.audio-item.selected-audio {
+  border-color: var(--accent4);
+  background: rgba(255,214,10,0.05);
+}
+.audio-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.audio-info { flex: 1; overflow: hidden; }
+.audio-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.audio-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.audio-wave {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  height: 20px;
+}
+.wave-bar {
+  width: 3px;
+  background: var(--accent3);
+  border-radius: 2px;
+  animation: wave 0.8s ease-in-out infinite;
+}
+.wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.wave-bar:nth-child(5) { animation-delay: 0.4s; }
+@keyframes wave {
+  0%,100% { height: 4px; }
+  50% { height: 16px; }
+}
+
+/* SCHEDULE */
+.schedule-list { display: flex; flex-direction: column; gap: 8px; }
+.schedule-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.schedule-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent4);
+  min-width: 60px;
+}
+.schedule-info { flex: 1; }
+.schedule-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.schedule-sub { font-size: 11px; color: var(--text2); }
+.schedule-toggle {
+  width: 44px;
+  height: 24px;
+  background: var(--surface3);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  flex-shrink: 0;
+}
+.schedule-toggle.on { background: var(--accent3); }
+.schedule-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.schedule-toggle.on::after { left: 22px; }
+
+/* PROGRESS BAR */
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--surface3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* CONNECT CARDS */
+.connect-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.connect-card:hover { border-color: var(--accent2); }
+.connect-card.connected { border-color: var(--success); }
+.connect-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.yt-icon { background: rgba(255,0,0,0.15); }
+.drive-icon { background: rgba(66,133,244,0.15); }
+.grok-icon { background: rgba(124,58,237,0.15); }
+.gemini-icon { background: rgba(6,214,160,0.15); }
+.connect-info { flex: 1; }
+.connect-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.connect-status { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.connect-status.active { color: var(--success); }
+.connect-btn { flex-shrink: 0; }
+
+/* AI RESULT */
+.ai-result {
+  background: var(--surface2);
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 12px;
+}
+.ai-result-section {
+  margin-bottom: 12px;
+}
+.ai-result-label {
+  font-size: 11px;
+  color: var(--accent2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.ai-result-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tag-hash { background: rgba(124,58,237,0.2); color: #a78bfa; }
+.tag-kw { background: rgba(6,214,160,0.2); color: var(--accent3); }
+
+/* TOAST */
+#toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface3);
+  color: var(--text);
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  max-width: 90vw;
+  text-align: center;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#toast.success { border-color: var(--success); color: var(--success); }
+#toast.error { border-color: var(--danger); color: var(--danger); }
+#toast.info { border-color: var(--accent2); color: #a78bfa; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  width: 100%;
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* BULK TEXTAREA */
+.bulk-area {
+  width: 100%;
+  min-height: 150px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 12px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  resize: vertical;
+  line-height: 1.8;
+}
+.bulk-area:focus { border-color: var(--accent2); }
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.stat-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+.stat-label { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 9px;
+  font-weight: 600;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bottom-nav-item.active { color: var(--accent); }
+.bottom-nav-item .nav-icon { font-size: 22px; }
+
+.main-content { padding-bottom: 80px; }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 12px;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--accent2);
+  background: rgba(124,58,237,0.05);
+  color: var(--text);
+}
+.upload-zone .upload-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* DIVIDER */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* LOADING SPINNER */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--surface3);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* CHECKBOX */
+.checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+.checkbox-wrap input[type="checkbox"] { display: none; }
+.custom-check {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.checkbox-wrap input:checked + .custom-check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checkbox-label { font-size: 13px; color: var(--text); }
+
+/* LOG */
+.log-box {
+  background: #050508;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  height: 150px;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent3);
+  line-height: 1.8;
+}
+.log-box .log-time { color: var(--text2); }
+.log-box .log-err { color: var(--danger); }
+.log-box .log-info { color: #a78bfa; }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* API KEY INPUT */
+.api-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+.api-row .input-group { flex: 1; margin-bottom: 0; }
+
+/* FLOATING ACTION */
+.fab {
+  position: fixed;
+  bottom: 88px;
+  right: 16px;
+  width: 52px;
+  height: 52px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255,0,64,0.5);
+  z-index: 90;
+  border: none;
+  transition: all 0.2s;
+}
+.fab:active { transform: scale(0.9); }
+
+/* SELECT ALL BAR */
+.select-bar {
+  background: var(--accent);
+  color: white;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  position: sticky;
+  top: 105px;
+  z-index: 88;
+  display: none;
+}
+.select-bar.visible { display: flex; }
+
+/* ANIMATION */
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* CHIP */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.chip.active-chip { background: var(--accent); color: white; }
+.chip.inactive-chip { background: var(--surface2); color: var(--text2); border-color: var(--border); }
+
+.chips-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+
+/* RANGE */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.range-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent4);
+  min-width: 30px;
+  text-align: right;
+}
+
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="logo">
+    <div class="logo-icon">▶</div>
+    <div>
+      <div style="font-size:15px;line-height:1">YT Automation</div>
+      <div style="font-size:10px;color:var(--text2);font-weight:400">Pro v2.0</div>
+    </div>
+  </div>
+  <div class="header-status">
+    <div class="status-dot" id="globalStatus"></div>
+    <span style="font-size:11px;color:var(--text2)" id="statusText">Ready</span>
+  </div>
+</div>
+
+<!-- SELECT BAR -->
+<div class="select-bar" id="selectBar">
+  <span id="selectCount">0 ভিডিও সিলেক্ট</span>
+  <div style="display:flex;gap:6px">
+    <button class="btn btn-sm btn-green" onclick="uploadSelectedVideos()">📤 আপলোড</button>
+    <button class="btn btn-sm btn-yellow" onclick="exportToZip()">📦 ZIP</button>
+    <button class="btn btn-sm btn-secondary" onclick="clearSelection()">✕</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+<!-- ===== PANEL: DOWNLOAD ===== -->
+<div class="panel active" id="panel-download">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">মোট ভিডিও</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statDone" style="color:var(--success)">0</div>
+      <div class="stat-label">সম্পন্ন</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statAudio" style="color:var(--accent4)">0</div>
+      <div class="stat-label">অডিও রেডি</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statScheduled" style="color:var(--accent2)">0</div>
+      <div class="stat-label">শিডিউল</div>
+    </div>
+  </div>
+
+  <!-- Bulk URL Input -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🔗</span> বাল্ক URL ইনপুট</div>
+      <button class="btn btn-sm btn-outline" onclick="pasteFromClipboard()">📋 পেস্ট</button>
+    </div>
+    <div class="input-group">
+      <div class="input-label">YouTube / TikTok লিংক (প্রতিটি লাইনে একটি, সর্বোচ্চ ৪০টি)</div>
+      <textarea class="bulk-area" id="bulkUrls" placeholder="https://www.tiktok.com/@user/video/123...
+https://youtu.be/abc123...
+https://www.youtube.com/shorts/xyz..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <span style="font-size:12px;color:var(--text2)">কোয়ালিটি:</span>
+      <div class="chips-row" style="margin-bottom:0">
+        <span class="chip active-chip" onclick="setQuality(this,'best')">🔥 Best</span>
+        <span class="chip inactive-chip" onclick="setQuality(this,'1080p')">HD</span>
+        <span class="chip inactive-chip" onclick="setQuality(this,'720p')">720p</span>
+        <span class="chip inactive-chip" onclick="setQuality(this,'480p')">480p</span>
+      </div>
+    </div>
+    <div class="btn-grid">
+      <button class="btn btn-primary" onclick="startBulkDownload()">⬇️ বাল্ক ডাউনলোড</button>
+      <button class="btn btn-secondary" onclick="clearUrlList()">🗑 ক্লিয়ার</button>
+    </div>
+  </div>
+
+  <!-- Download Queue -->
+  <div class="card" id="queueCard" style="display:none">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">⏳</span> ডাউনলোড কিউ</div>
+      <button class="btn btn-sm btn-danger" onclick="cancelAll()">বাতিল</button>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="overallProgress" style="width:0%"></div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px" id="progressText">প্রস্তুতি নিচ্ছে...</div>
+    <div class="url-list" id="urlList"></div>
+    <div class="log-box" id="downloadLog" style="margin-top:10px"></div>
+  </div>
+
+</div>
+
+<!-- ===== PANEL: VIDEOS ===== -->
+<div class="panel" id="panel-videos">
+
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-sm btn-outline" onclick="selectAll()">☑ সব</button>
+      <button class="btn btn-sm btn-outline" onclick="clearSelection()">☐ বাতিল</button>
+      <button class="btn btn-sm btn-purple" onclick="aiAudioAll()">🤖 AI অডিও সব</button>
+      <button class="btn btn-sm btn-secondary" onclick="sortVideos()">⇅ সর্ট</button>
+    </div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="chips-row">
+    <span class="chip active-chip" onclick="filterVideos(this,'all')">সব</span>
+    <span class="chip inactive-chip" onclick="filterVideos(this,'muted')">মিউট</span>
+    <span class="chip inactive-chip" onclick="filterVideos(this,'audio')">অডিও আছে</span>
+    <span class="chip inactive-chip" onclick="filterVideos(this,'noaudio')">অডিও নেই</span>
+  </div>
+
+  <div class="video-grid" id="videoGrid">
+    <!-- Videos render here -->
+  </div>
+
+  <div id="noVideos" style="text-align:center;padding:40px 20px;color:var(--text2)">
+    <div style="font-size:48px;margin-bottom:12px">📭</div>
+    <div style="font-size:14px;font-weight:600">কোনো ভিডিও নেই</div>
+    <div style="font-size:12px;margin-top:6px">ডাউনলোড ট্যাব থেকে ভিডিও যোগ করুন</div>
+  </div>
+
+</div>
+
+<!-- ===== PANEL: AUDIO ===== -->
+<div class="panel" id="panel-audio">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🎵</span> অডিও যোগ করুন</div>
+    </div>
+
+    <!-- Upload local audio -->
+    <div class="upload-zone" onclick="document.getElementById('audioFileInput').click()" id="audioDropZone">
+      <div class="upload-icon">🎧</div>
+      <div style="font-weight:600;margin-bottom:4px">অডিও ফাইল আপলোড</div>
+      <div style="font-size:12px">MP3, WAV, M4A সাপোর্টেড</div>
+    </div>
+    <input type="file" id="audioFileInput" accept="audio/*" multiple style="display:none" onchange="handleAudioFiles(this)">
+
+    <div class="divider">অথবা YouTube/TikTok থেকে</div>
+
+    <div class="input-group">
+      <div class="input-label">YouTube Shorts / TikTok অডিও লিংক</div>
+      <div style="display:flex;gap:8px">
+        <input type="url" id="audioUrl" placeholder="https://youtu.be/..." style="flex:1">
+        <button class="btn btn-primary" onclick="extractAudio()">⬇️</button>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">💡 বাল্ক অডিও লিংক: প্রতি লাইনে একটি</div>
+    <textarea class="bulk-area" id="bulkAudioUrls" placeholder="একাধিক অডিও লিংক দিন..." style="min-height:80px"></textarea>
+    <button class="btn btn-purple btn-block" style="margin-top:8px" onclick="extractBulkAudio()">🎵 সব থেকে অডিও নিন</button>
+  </div>
+
+  <!-- Audio Library -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">📚</span> অডিও লাইব্রেরি</div>
+      <span style="font-size:12px;color:var(--text2)" id="audioCount">0 অডিও</span>
+    </div>
+    <div class="audio-list" id="audioList">
+      <!-- Audio items render here -->
+    </div>
+    <div id="noAudio" style="text-align:center;padding:20px;color:var(--text2);font-size:13px">
+      কোনো অডিও নেই। উপরে যোগ করুন।
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== PANEL: AI ===== -->
+<div class="panel" id="panel-ai">
+
+  <!-- AI Service Config -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🤖</span> AI সার্ভিস</div>
+    </div>
+    <div class="chips-row">
+      <span class="chip active-chip" onclick="setAI(this,'gemini')">✨ Gemini</span>
+      <span class="chip inactive-chip" onclick="setAI(this,'grok')">⚡ Grok</span>
+      <span class="chip inactive-chip" onclick="setAI(this,'openai')">🧠 GPT-4</span>
+    </div>
+    <div class="api-row">
+      <div class="input-group">
+        <div class="input-label">API Key</div>
+        <input type="text" id="aiApiKey" placeholder="API Key এখানে..." autocomplete="off">
+      </div>
+      <button class="btn btn-green btn-sm" onclick="saveApiKey()">💾</button>
+    </div>
+    <div class="input-group">
+      <div class="input-label">চ্যানেলের ধরন / নিশ</div>
+      <input type="text" id="channelNiche" placeholder="যেমন: রান্না + ইসলামিক ওয়াজ" value="">
+    </div>
+    <div class="input-group">
+      <div class="input-label">ভাষা</div>
+      <select id="titleLang">
+        <option value="bn">বাংলা</option>
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Generate for single -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">✍️</span> টাইটেল / মেটা জেনারেট</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">ভিডিও বিষয় (AI বুঝবে)</div>
+      <input type="text" id="videoTopic" placeholder="যেমন: সন্তুষ্টিজনক রান্না, ASMR কুকিং">
+    </div>
+    <div class="input-group">
+      <div class="input-label">কাস্টম নির্দেশ (ঐচ্ছিক)</div>
+      <textarea id="aiInstruction" placeholder="যেমন: ভাইরাল হ্যাশট্যাগ দিও, ৫০০+ ভিউ টার্গেট" style="min-height:70px"></textarea>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <label class="checkbox-wrap">
+        <input type="checkbox" id="genTitle" checked>
+        <span class="custom-check">✓</span>
+        <span class="checkbox-label" style="font-size:12px">টাইটেল</span>
+      </label>
+      <label class="checkbox-wrap">
+        <input type="checkbox" id="genDesc" checked>
+        <span class="custom-check">✓</span>
+        <span class="checkbox-label" style="font-size:12px">বিবরণ</span>
+      </label>
+      <label class="checkbox-wrap">
+        <input type="checkbox" id="genHash" checked>
+        <span class="custom-check">✓</span>
+        <span class="checkbox-label" style="font-size:12px">হ্যাশট্যাগ</span>
+      </label>
+      <label class="checkbox-wrap">
+        <input type="checkbox" id="genTags" checked>
+        <span class="custom-check">✓</span>
+        <span class="checkbox-label" style="font-size:12px">SEO ট্যাগ</span>
+      </label>
+    </div>
+    <button class="btn btn-purple btn-block" onclick="generateMeta()" id="genBtn">
+      ✨ AI দিয়ে জেনারেট করুন
+    </button>
+
+    <!-- AI Result -->
+    <div class="ai-result" id="aiResultBox" style="display:none">
+      <div class="ai-result-section">
+        <div class="ai-result-label">📌 টাইটেল</div>
+        <div class="ai-result-text" id="resTitle"></div>
+      </div>
+      <div class="ai-result-section">
+        <div class="ai-result-label">📝 বিবরণ</div>
+        <div class="ai-result-text" id="resDesc" style="font-size:12px;color:var(--text2)"></div>
+      </div>
+      <div class="ai-result-section">
+        <div class="ai-result-label"># হ্যাশট্যাগ</div>
+        <div class="tag-list" id="resHash"></div>
+      </div>
+      <div class="ai-result-section">
+        <div class="ai-result-label">🔑 SEO ট্যাগ</div>
+        <div class="tag-list" id="resTags"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-sm btn-outline" onclick="copyAllMeta()">📋 সব কপি</button>
+        <button class="btn btn-sm btn-green" onclick="regenerateMeta()">🔄 আবার</button>
+        <button class="btn btn-sm btn-primary" onclick="applyToSelected()">✅ ভিডিওতে যোগ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk AI -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🚀</span> বাল্ক AI মেটা</div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">সব ভিডিওর জন্য একসাথে AI মেটা জেনারেট করুন</div>
+    <div class="input-group">
+      <div class="input-label">প্রতিটি ভিডিওর জন্য ভিন্ন কীওয়ার্ড (ঐচ্ছিক)</div>
+      <textarea id="bulkKeywords" placeholder="ভিডিও ১: রান্না ASMR&#10;ভিডিও ২: ইসলামিক ওয়াজ&#10;..." style="min-height:80px"></textarea>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="bulkGenerateMeta()">⚡ সব ভিডিওতে AI মেটা</button>
+  </div>
+
+</div>
+
+<!-- ===== PANEL: UPLOAD ===== -->
+<div class="panel" id="panel-upload">
+
+  <!-- YouTube Connect -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🔗</span> সার্ভিস কানেক্ট</div>
+    </div>
+
+    <div class="connect-card" id="ytCard" onclick="connectYouTube()">
+      <div class="connect-icon yt-icon">▶️</div>
+      <div class="connect-info">
+        <div class="connect-name">YouTube</div>
+        <div class="connect-status" id="ytStatus">সংযুক্ত নয়</div>
+      </div>
+      <button class="btn btn-sm btn-primary connect-btn" id="ytBtn">কানেক্ট</button>
+    </div>
+
+    <div class="connect-card" id="driveCard" onclick="connectDrive()">
+      <div class="connect-icon drive-icon">📁</div>
+      <div class="connect-info">
+        <div class="connect-name">Google Drive</div>
+        <div class="connect-status" id="driveStatus">সংযুক্ত নয়</div>
+      </div>
+      <button class="btn btn-sm btn-secondary connect-btn" id="driveBtn">কানেক্ট</button>
+    </div>
+  </div>
+
+  <!-- Upload Settings -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">⚙️</span> আপলোড সেটিংস</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">প্রাইভেসি</div>
+      <select id="privacySetting">
+        <option value="private">🔒 Private (পরে পাবলিক করব)</option>
+        <option value="public">🌍 Public</option>
+        <option value="unlisted">🔗 Unlisted</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <div class="input-label">ক্যাটাগরি</div>
+      <select id="categoryId">
+        <option value="22">People & Blogs</option>
+        <option value="24">Entertainment</option>
+        <option value="26">Howto & Style</option>
+        <option value="10">Music</option>
+        <option value="17">Sports</option>
+        <option value="28">Science & Technology</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <div class="input-label">প্লেলিস্ট (ঐচ্ছিক)</div>
+      <input type="text" id="playlistId" placeholder="Playlist ID...">
+    </div>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="notifySubscribers">
+      <span class="custom-check">✓</span>
+      <span class="checkbox-label">সাবস্ক্রাইবারদের নোটিফিকেশন পাঠান</span>
+    </label>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="madeForKids">
+      <span class="custom-check">✓</span>
+      <span class="checkbox-label">Made for Kids</span>
+    </label>
+  </div>
+
+  <!-- Selected Videos Upload -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">📤</span> আপলোড</div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px" id="selectedForUpload">
+      ভিডিও ট্যাব থেকে ভিডিও সিলেক্ট করুন
+    </div>
+    <div class="btn-grid">
+      <button class="btn btn-primary" onclick="uploadSelectedVideos()">📤 YouTube আপলোড</button>
+      <button class="btn btn-secondary" onclick="exportToZip()">📦 ZIP + Drive</button>
+    </div>
+    <div class="progress-bar" id="uploadProgress" style="display:none">
+      <div class="progress-fill" id="uploadProgressFill" style="width:0%"></div>
+    </div>
+    <div class="log-box" id="uploadLog" style="margin-top:10px"></div>
+  </div>
+
+</div>
+
+<!-- ===== PANEL: SCHEDULE ===== -->
+<div class="panel" id="panel-schedule">
+
+  <!-- Scheduler Config -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">⏰</span> অটো শিডিউল</div>
+      <button class="schedule-toggle" id="schedulerToggle" onclick="toggleScheduler(this)"></button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
+      প্রতিদিন নির্দিষ্ট সময়ে জিপ ফাইল / ফোল্ডার থেকে র‍্যান্ডম ভিডিও আপলোড হবে
+    </div>
+    <div class="input-group">
+      <div class="input-label">সোর্স</div>
+      <select id="scheduleSource">
+        <option value="local">💾 লোকাল স্টোরেজ</option>
+        <option value="drive">📁 Google Drive ZIP</option>
+      </select>
+    </div>
+    <div class="input-group" id="driveFolderRow" style="display:none">
+      <div class="input-label">Drive Folder ID</div>
+      <input type="text" id="driveFolderId" placeholder="Google Drive Folder ID">
+    </div>
+  </div>
+
+  <!-- Time Slots -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🕐</span> সময় স্লট</div>
+      <button class="btn btn-sm btn-outline" onclick="addTimeSlot()">+ যোগ করুন</button>
+    </div>
+    <div class="schedule-list" id="scheduleList">
+      <!-- Default slots -->
+    </div>
+  </div>
+
+  <!-- Weekly Control -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">📅</span> সাপ্তাহিক কন্ট্রোল</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px">
+      <div class="day-btn active" data-day="0">রবি</div>
+      <div class="day-btn active" data-day="1">সোম</div>
+      <div class="day-btn active" data-day="2">মঙ্গল</div>
+      <div class="day-btn active" data-day="3">বুধ</div>
+      <div class="day-btn active" data-day="4">বৃহ</div>
+      <div class="day-btn active" data-day="5">শুক্র</div>
+      <div class="day-btn active" data-day="6">শনি</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">প্রতিদিন সর্বোচ্চ আপলোড</div>
+      <div class="range-row">
+        <input type="range" id="maxPerDay" min="1" max="10" value="2" oninput="document.getElementById('maxPerDayVal').textContent=this.value">
+        <span class="range-val" id="maxPerDayVal">2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload History -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">📊</span> আপলোড ইতিহাস</div>
+    </div>
+    <div class="log-box" id="scheduleLog">
+      <span class="log-info">[System] শিডিউলার প্রস্তুত</span><br>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== PANEL: SETTINGS ===== -->
+<div class="panel" id="panel-settings">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">🔑</span> API কনফিগ</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">YouTube Data API v3 Key</div>
+      <input type="text" id="ytApiKey" placeholder="AIza..." autocomplete="off">
+    </div>
+    <div class="input-group">
+      <div class="input-label">YouTube OAuth Client ID</div>
+      <input type="text" id="ytClientId" placeholder="xxx.apps.googleusercontent.com">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Google Drive Client ID</div>
+      <input type="text" id="driveClientId" placeholder="xxx.apps.googleusercontent.com">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Gemini API Key</div>
+      <input type="text" id="geminiKey" placeholder="AIza..." autocomplete="off">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Grok API Key</div>
+      <input type="text" id="grokKey" placeholder="xai-..." autocomplete="off">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Backend Server URL (Railway)</div>
+      <input type="url" id="backendUrl" placeholder="https://your-app.up.railway.app">
+    </div>
+    <button class="btn btn-green btn-block" onclick="saveAllSettings()">💾 সেটিংস সেভ করুন</button>
+  </div>
+
+  <!-- Download Settings -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">⬇️</span> ডাউনলোড সেটিংস</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">ডিফল্ট ফরম্যাট</div>
+      <select id="defaultFormat">
+        <option value="mp4">MP4 (সব ডিভাইস)</option>
+        <option value="webm">WebM</option>
+        <option value="best">Best Available</option>
+      </select>
+    </div>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="autoMute" checked>
+      <span class="custom-check">✓</span>
+      <span class="checkbox-label">ডাউনলোডের পর অটো মিউট</span>
+    </label>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="autoAI" checked>
+      <span class="custom-check">✓</span>
+      <span class="checkbox-label">ডাউনলোডের পর অটো AI মেটা</span>
+    </label>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="deleteAfterUpload" checked>
+      <span class="custom-check">✓</span>
+      <span class="checkbox-label">আপলোডের পর ডিলিট করুন</span>
+    </label>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="removeTikTokWatermark" checked>
+      <span class="custom-check">✓</span>
+      <span class="checkbox-label">TikTok ওয়াটারমার্ক রিমুভ</span>
+    </label>
+  </div>
+
+  <!-- AI Prompt Template -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><span class="icon">📝</span> AI প্রম্পট টেমপ্লেট</div>
+    </div>
+    <div class="input-group">
+      <div class="input-label">টাইটেল প্রম্পট</div>
+      <textarea id="titlePrompt" style="min-height:80px">তুমি একজন YouTube SEO বিশেষজ্ঞ। নিচের ভিডিও বিষয়ের জন্য ক্লিকবেইট + SEO অপ্টিমাইজড বাংলা টাইটেল লেখো। টাইটেলটি হবে: আকর্ষণীয়, ইমোজি সহ, ৫০-৬০ ক্যারেক্টার।</textarea>
+    </div>
+    <div class="input-group">
+      <div class="input-label">হ্যাশট্যাগ প্রম্পট</div>
+      <textarea id="hashPrompt" style="min-height:80px">ভিডিওর জন্য ভাইরাল বাংলা ও ইংলিশ হ্যাশট্যাগ তৈরি করো। অন্তত ১৫টি হ্যাশট্যাগ দাও যা YouTube শর্টসে ভাইরাল হওয়ার সম্ভাবনা বেশি।</textarea>
+    </div>
+    <button class="btn btn-outline btn-block" onclick="resetPrompts()">↺ ডিফল্টে ফিরে যান</button>
+  </div>
+
+  <!-- App Info -->
+  <div class="card" style="text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">▶️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px">YouTube Automation Pro</div>
+    <div style="font-size:12px;color:var(--text2)">Version 2.0 | Mobile Optimized</div>
+    <div style="font-size:11px;color:var(--text2);margin-top:8px">Railway Hosted | GitHub Repo Ready</div>
+    <button class="btn btn-sm btn-outline" style="margin-top:12px" onclick="exportConfig()">📤 Config Export</button>
+    <button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="importConfig()">📥 Config Import</button>
+  </div>
+
+</div>
+
+</div><!-- end main-content -->
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bottom-nav-item active" onclick="switchTab('download', this)">
+    <div class="nav-icon">⬇️</div>
+    <div>ডাউনলোড</div>
+  </div>
+  <div class="bottom-nav-item" onclick="switchTab('videos', this)">
+    <div class="nav-icon">🎬</div>
+    <div>ভিডিও</div>
+  </div>
+  <div class="bottom-nav-item" onclick="switchTab('audio', this)">
+    <div class="nav-icon">🎵</div>
+    <div>অডিও</div>
+  </div>
+  <div class="bottom-nav-item" onclick="switchTab('ai', this)">
+    <div class="nav-icon">🤖</div>
+    <div>AI</div>
+  </div>
+  <div class="bottom-nav-item" onclick="switchTab('upload', this)">
+    <div class="nav-icon">📤</div>
+    <div>আপলোড</div>
+  </div>
+  <div class="bottom-nav-item" onclick="switchTab('schedule', this)">
+    <div class="nav-icon">⏰</div>
+    <div>শিডিউল</div>
+  </div>
+  <div class="bottom-nav-item" onclick="switchTab('settings', this)">
+    <div class="nav-icon">⚙️</div>
+    <div>সেটিংস</div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<!-- Audio Assign Modal -->
+<div class="modal-overlay" id="audioModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🎵 ভিডিওতে অডিও লাগান</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">ভিডিও: <span id="modalVideoTitle" style="color:var(--text);font-weight:600"></span></div>
+      <div class="chips-row">
+        <span class="chip active-chip" onclick="setAudioMode(this,'manual')">✋ ম্যানুয়াল</span>
+        <span class="chip inactive-chip" onclick="setAudioMode(this,'ai')">🤖 AI র‍্যান্ডম</span>
+      </div>
+    </div>
+    <div id="audioSelectList" class="audio-list"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-primary btn-block" onclick="confirmAudioAssign()">✅ অ্যাসাইন করুন</button>
+      <button class="btn btn-secondary" onclick="closeModal('audioModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- Video Details Modal -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="videoModalTitle">ভিডিও বিবরণ</div>
+    <div id="videoModalContent"></div>
+    <button class="btn btn-secondary btn-block" style="margin-top:12px" onclick="closeModal('videoModal')">বন্ধ করুন</button>
+  </div>
+</div>
+
+<!-- Add Time Slot Modal -->
+<div class="modal-overlay" id="timeModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⏰ সময় স্লট যোগ করুন</div>
+    <div class="input-group">
+      <div class="input-label">সময়</div>
+      <input type="time" id="newTimeInput" value="12:00">
+    </div>
+    <div class="input-group">
+      <div class="input-label">লেবেল</div>
+      <input type="text" id="newTimeLabel" placeholder="যেমন: দুপুরের পোস্ট">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-primary btn-block" onclick="confirmAddSlot()">যোগ করুন</button>
+      <button class="btn btn-secondary" onclick="closeModal('timeModal')">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- Day button style -->
+<style>
+.day-btn {
+  background: var(--surface3);
+  color: var(--text2);
+  border-radius: 6px;
+  font-size: 10px;
+  padding: 6px 2px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+}
+.day-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+</style>
+
+<script>
+// ==================== STATE ====================
+const state = {
+  videos: [],
+  audios: [],
+  selectedVideos: new Set(),
+  selectedAudioId: null,
+  currentVideoForAudio: null,
+  aiService: 'gemini',
+  quality: 'best',
+  audioMode: 'manual',
+  scheduleSlots: [
+    { time: '12:00', label: 'দুপুর ১২টা', on: true },
+    { time: '20:00', label: 'রাত ৮টা', on: true }
+  ],
+  schedulerOn: false,
+  settings: {},
+  activeDays: [0,1,2,3,4,5,6],
+  currentAiResult: null,
+  downloadQueue: [],
+  isDownloading: false,
+};
+
+// ==================== UTILS ====================
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.className='', 2800);
+}
+
+function log(boxId, msg, type='') {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+  const time = new Date().toLocaleTimeString('bn-BD');
+  const cls = type === 'error' ? 'log-err' : type === 'info' ? 'log-info' : '';
+  box.innerHTML += `<span class="log-time">[${time}]</span> <span class="${cls}">${msg}</span><br>`;
+  box.scrollTop = box.scrollHeight;
+}
+
+function getBackendUrl() {
+  return localStorage.getItem('backendUrl') || 'https://your-app.up.railway.app';
+}
+
+function getSettings() {
+  try { return JSON.parse(localStorage.getItem('ytAutoSettings') || '{}'); } catch { return {}; }
+}
+
+function saveSettings(s) {
+  localStorage.setItem('ytAutoSettings', JSON.stringify(s));
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = state.videos.length;
+  document.getElementById('statDone').textContent = state.videos.filter(v=>v.status==='done').length;
+  document.getElementById('statAudio').textContent = state.audios.length;
+  document.getElementById('statScheduled').textContent = state.scheduleSlots.filter(s=>s.on).length;
+}
+
+// ==================== NAVIGATION ====================
+function switchTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'videos') renderVideos();
+  if (name === 'audio') renderAudioList();
+  if (name === 'schedule') renderSchedule();
+  if (name === 'settings') loadSettingsUI();
+  if (name === 'upload') updateUploadPanel();
+}
+
+// ==================== DOWNLOAD ====================
+function setQuality(el, q) {
+  state.quality = q;
+  document.querySelectorAll('.chips-row .chip').forEach(c=>c.className='chip inactive-chip');
+  el.className = 'chip active-chip';
+}
+
+async function pasteFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('bulkUrls').value += (document.getElementById('bulkUrls').value ? '\n' : '') + text;
+    toast('📋 পেস্ট হয়েছে', 'success');
+  } catch {
+    toast('ক্লিপবোর্ড অ্যাক্সেস নেই', 'error');
+  }
+}
+
+async function startBulkDownload() {
+  const raw = document.getElementById('bulkUrls').value.trim();
+  if (!raw) { toast('URL দিন!', 'error'); return; }
+  
+  const urls = raw.split('\n').map(u=>u.trim()).filter(u=>u && (u.includes('tiktok.com') || u.includes('youtube.com') || u.includes('youtu.be')));
+  
+  if (!urls.length) { toast('কোনো বৈধ URL নেই', 'error'); return; }
+  if (urls.length > 40) { toast('সর্বোচ্চ ৪০টি URL', 'error'); return; }
+  
+  state.downloadQueue = urls.map((url, i) => ({ id: 'dl_'+Date.now()+'_'+i, url, status: 'pending', title: '', progress: 0 }));
+  
+  document.getElementById('queueCard').style.display = '';
+  renderUrlList();
+  document.getElementById('progressText').textContent = `০/${urls.length} ডাউনলোড হচ্ছে...`;
+  log('downloadLog', `${urls.length}টি URL পেয়েছি`, 'info');
+  
+  await processDownloadQueue();
+}
+
+function renderUrlList() {
+  const list = document.getElementById('urlList');
+  list.innerHTML = state.downloadQueue.map(item => `
+    <div class="url-item" id="qi_${item.id}">
+      <div class="url-text">${item.url}</div>
+      <span class="url-status status-${item.status}">${getStatusLabel(item.status)}</span>
+    </div>
+  `).join('');
+}
+
+function getStatusLabel(s) {
+  return {pending:'অপেক্ষায়', downloading:'ডাউনলোড', done:'✓ হয়েছে', error:'✗ ত্রুটি'}[s] || s;
+}
+
+async function processDownloadQueue() {
+  const backend = getBackendUrl();
+  let done = 0;
+  
+  for (const item of state.downloadQueue) {
+    item.status = 'downloading';
+    updateQueueItem(item);
+    log('downloadLog', `ডাউনলোড: ${item.url.substring(0,50)}...`);
+    
+    try {
+      const res = await fetch(`${backend}/api/download`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          url: item.url,
+          quality: state.quality,
+          mute: localStorage.getItem('ytAutoSettings') ? JSON.parse(localStorage.getItem('ytAutoSettings')).autoMute !== false : true,
+          removeTikTokWatermark: true
+        })
+      });
+      
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      
+      item.status = 'done';
+      item.videoData = data;
+      
+      // Add to state videos
+      state.videos.push({
+        id: item.id,
+        title: data.title || 'ভিডিও ' + (state.videos.length + 1),
+        url: item.url,
+        filename: data.filename,
+        filepath: data.filepath,
+        thumbnail: data.thumbnail,
+        duration: data.duration,
+        size: data.size,
+        muted: true,
+        audioId: null,
+        meta: null,
+        status: 'done'
+      });
+      
+      log('downloadLog', `✓ সম্পন্ন: ${data.title || 'ভিডিও'}`, '');
+    } catch (err) {
+      item.status = 'error';
+      log('downloadLog', `✗ ত্রুটি: ${err.message}`, 'error');
+    }
+    
+    done++;
+    updateQueueItem(item);
+    document.getElementById('overallProgress').style.width = `${(done/state.downloadQueue.length)*100}%`;
+    document.getElementById('progressText').textContent = `${done}/${state.downloadQueue.length} সম্পন্ন`;
+    
+    // Auto AI meta if enabled
+    const settings = getSettings();
+    if (settings.autoAI && item.status === 'done') {
+      const vid = state.videos[state.videos.length - 1];
+      if (vid) await autoGenerateMeta(vid);
+    }
+    
+    updateStats();
+  }
+  
+  toast(`✅ ${done}টি ডাউনলোড সম্পন্ন`, 'success');
+  updateStats();
+}
+
+function updateQueueItem(item) {
+  const el = document.getElementById('qi_'+item.id);
+  if (el) {
+    el.querySelector('.url-status').className = `url-status status-${item.status}`;
+    el.querySelector('.url-status').textContent = getStatusLabel(item.status);
+  }
+}
+
+function cancelAll() {
+  state.downloadQueue.forEach(i=>{ if(i.status==='pending') i.status='error'; });
+  renderUrlList();
+  toast('বাতিল করা হয়েছে');
+}
+
+function clearUrlList() {
+  document.getElementById('bulkUrls').value = '';
+  state.downloadQueue = [];
+  document.getElementById('queueCard').style.display = 'none';
+  toast('ক্লিয়ার হয়েছে');
+}
+
+// ==================== VIDEOS ====================
+function renderVideos() {
+  const grid = document.getElementById('videoGrid');
+  const noVideos = document.getElementById('noVideos');
+  
+  if (!state.videos.length) {
+    grid.innerHTML = '';
+    noVideos.style.display = '';
+    return;
+  }
+  noVideos.style.display = 'none';
+  
+  grid.innerHTML = state.videos.map(v => `
+    <div class="video-card ${state.selectedVideos.has(v.id) ? 'selected' : ''}" id="vc_${v.id}" onclick="toggleVideoSelect('${v.id}')">
+      <div class="video-thumb-placeholder">
+        ${v.thumbnail ? `<img src="${v.thumbnail}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : '🎬'}
+        ${v.muted ? '<div class="video-muted-badge">🔇 MUTED</div>' : ''}
+        ${v.audioId ? `<div class="audio-badge">🎵 ${getAudioName(v.audioId)}</div>` : ''}
+        <div class="video-duration">${v.duration || '??'}</div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">${v.meta?.title || v.title}</div>
+        <div class="video-meta">
+          <span>${v.size || '?'}</span>
+          ${v.meta ? '<span style="color:var(--accent2)">✨ AI</span>' : ''}
+        </div>
+      </div>
+      <div class="video-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-sm btn-purple" onclick="openAudioModal('${v.id}')">🎵</button>
+        <button class="btn btn-sm btn-secondary" onclick="generateMetaForVideo('${v.id}')">✨</button>
+        <button class="btn btn-sm btn-primary" onclick="uploadSingleVideo('${v.id}')">📤</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteVideo('${v.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+  
+  updateSelectBar();
+}
+
+function getAudioName(id) {
+  const a = state.audios.find(a=>a.id===id);
+  return a ? a.name.substring(0,10) : '?';
+}
+
+function toggleVideoSelect(id) {
+  if (state.selectedVideos.has(id)) state.selectedVideos.delete(id);
+  else state.selectedVideos.add(id);
+  
+  const el = document.getElementById('vc_'+id);
+  if (el) el.classList.toggle('selected', state.selectedVideos.has(id));
+  updateSelectBar();
+}
+
+function selectAll() {
+  state.videos.forEach(v=>state.selectedVideos.add(v.id));
+  renderVideos();
+}
+
+function clearSelection() {
+  state.selectedVideos.clear();
+  renderVideos();
+}
+
+function updateSelectBar() {
+  const bar = document.getElementById('selectBar');
+  const cnt = state.selectedVideos.size;
+  bar.classList.toggle('visible', cnt > 0);
+  document.getElementById('selectCount').textContent = `${cnt}টি ভিডিও সিলেক্ট`;
+  updateUploadPanel();
+}
+
+function filterVideos(el, type) {
+  document.querySelectorAll('#panel-videos .chip').forEach(c=>c.className='chip inactive-chip');
+  el.className = 'chip active-chip';
+  // Filter logic could be extended
+  renderVideos();
+}
+
+function sortVideos() {
+  state.videos.sort((a,b)=> a.title.localeCompare(b.title));
+  renderVideos();
+  toast('সর্ট হয়েছে');
+}
+
+function deleteVideo(id) {
+  const v = state.videos.find(v=>v.id===id);
+  if (!confirm(`"${v?.title || 'ভিডিও'}" ডিলিট করবেন?`)) return;
+  
+  fetch(`${getBackendUrl()}/api/delete`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ filepath: v?.filepath })
+  }).catch(()=>{});
+  
+  state.videos = state.videos.filter(v=>v.id!==id);
+  state.selectedVideos.delete(id);
+  renderVideos();
+  updateStats();
+  toast('ডিলিট হয়েছে', 'success');
+}
+
+async function aiAudioAll() {
+  if (!state.audios.length) { toast('কোনো অডিও নেই!', 'error'); return; }
+  state.videos.forEach(v => {
+    if (!v.audioId) v.audioId = state.audios[Math.floor(Math.random()*state.audios.length)].id;
+  });
+  renderVideos();
+  toast(`✅ সব ভিডিওতে র‍্যান্ডম অডিও দেওয়া হয়েছে`, 'success');
+}
+
+// ==================== AUDIO ====================
+function handleAudioFiles(input) {
+  Array.from(input.files).forEach(file => {
+    const id = 'audio_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    const url = URL.createObjectURL(file);
+    state.audios.push({ id, name: file.name, url, source: 'local', duration: '?', size: (file.size/1024/1024).toFixed(1)+'MB' });
+  });
+  renderAudioList();
+  updateStats();
+  toast(`✅ ${input.files.length}টি অডিও যোগ হয়েছে`, 'success');
+}
+
+async function extractAudio() {
+  const url = document.getElementById('audioUrl').value.trim();
+  if (!url) { toast('URL দিন!', 'error'); return; }
+  await extractAudioFromUrl(url);
+  document.getElementById('audioUrl').value = '';
+}
+
+async function extractBulkAudio() {
+  const raw = document.getElementById('bulkAudioUrls').value.trim();
+  if (!raw) { toast('URL দিন!', 'error'); return; }
+  const urls = raw.split('\n').map(u=>u.trim()).filter(Boolean);
+  for (const url of urls) await extractAudioFromUrl(url);
+  document.getElementById('bulkAudioUrls').value = '';
+  toast(`✅ ${urls.length}টি অডিও প্রসেস হয়েছে`, 'success');
+}
+
+async function extractAudioFromUrl(url) {
+  toast('অডিও এক্সট্র্যাক্ট হচ্ছে...', 'info');
+  try {
+    const res = await fetch(`${getBackendUrl()}/api/extract-audio`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ url })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    
+    const id = 'audio_' + Date.now();
+    state.audios.push({
+      id, name: data.title || 'অডিও '+state.audios.length,
+      url: data.audioUrl, filepath: data.filepath,
+      source: 'extracted', duration: data.duration || '?',
+      size: data.size || '?'
+    });
+    renderAudioList();
+    updateStats();
+  } catch (err) {
+    toast('এক্সট্র্যাক্ট ব্যর্থ: ' + err.message, 'error');
+  }
+}
+
+function renderAudioList() {
+  const list = document.getElementById('audioList');
+  const none = document.getElementById('noAudio');
+  document.getElementById('audioCount').textContent = state.audios.length + ' অডিও';
+  
+  if (!state.audios.length) {
+    list.innerHTML = '';
+    none.style.display = '';
+    return;
+  }
+  none.style.display = 'none';
+  
+  list.innerHTML = state.audios.map(a => `
+    <div class="audio-item ${state.selectedAudioId===a.id?'selected-audio':''}" id="ai_${a.id}">
+      <div class="audio-icon">🎵</div>
+      <div class="audio-info">
+        <div class="audio-name">${a.name}</div>
+        <div class="audio-meta">${a.duration} · ${a.size} · ${a.source==='local'?'লোকাল':'ডাউনলোড'}</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-secondary btn-icon" onclick="previewAudio('${a.id}')">▶</button>
+        <button class="btn btn-sm btn-danger btn-icon" onclick="deleteAudio('${a.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let currentAudio = null;
+function previewAudio(id) {
+  const a = state.audios.find(a=>a.id===id);
+  if (!a) return;
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  currentAudio = new Audio(a.url);
+  currentAudio.play().catch(()=>toast('প্রিভিউ করা যাচ্ছে না', 'error'));
+  toast('▶ ' + a.name, 'info');
+}
+
+function deleteAudio(id) {
+  state.audios = state.audios.filter(a=>a.id!==id);
+  renderAudioList();
+  updateStats();
+  toast('অডিও ডিলিট হয়েছে');
+}
+
+// ==================== AUDIO MODAL ====================
+function openAudioModal(videoId) {
+  state.currentVideoForAudio = videoId;
+  const v = state.videos.find(v=>v.id===videoId);
+  document.getElementById('modalVideoTitle').textContent = v?.title || 'ভিডিও';
+  
+  const list = document.getElementById('audioSelectList');
+  list.innerHTML = state.audios.map(a => `
+    <div class="audio-item ${v?.audioId===a.id?'selected-audio':''}" onclick="selectAudioForVideo('${a.id}',this)">
+      <div class="audio-icon">🎵</div>
+      <div class="audio-info">
+        <div class="audio-name">${a.name}</div>
+        <div class="audio-meta">${a.duration} · ${a.size}</div>
+      </div>
+    </div>
+  `).join('');
+  
+  if (!state.audios.length) list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">অডিও ট্যাবে অডিও যোগ করুন</div>';
+  
+  openModal('audioModal');
+}
+
+function selectAudioForVideo(audioId, el) {
+  state.selectedAudioId = audioId;
+  document.querySelectorAll('#audioSelectList .audio-item').forEach(e=>e.classList.remove('selected-audio'));
+  el.classList.add('selected-audio');
+}
+
+async function confirmAudioAssign() {
+  if (!state.selectedAudioId || !state.currentVideoForAudio) {
+    toast('অডিও সিলেক্ট করুন!', 'error'); return;
+  }
+  
+  const v = state.videos.find(v=>v.id===state.currentVideoForAudio);
+  if (!v) return;
+  
+  v.audioId = state.selectedAudioId;
+  toast('অডিও মার্জ হচ্ছে...', 'info');
+  
+  try {
+    const audio = state.audios.find(a=>a.id===state.selectedAudioId);
+    const res = await fetch(`${getBackendUrl()}/api/merge-audio`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        videoPath: v.filepath,
+        audioPath: audio?.filepath || audio?.url,
+        outputPath: v.filepath?.replace('.mp4', '_final.mp4')
+      })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    v.filepath = data.outputPath || v.filepath;
+    toast('✅ অডিও যোগ হয়েছে!', 'success');
+  } catch (err) {
+    toast('মার্জ ত্রুটি: ' + err.message, 'error');
+  }
+  
+  closeModal('audioModal');
+  renderVideos();
+}
+
+function setAudioMode(el, mode) {
+  state.audioMode = mode;
+  document.querySelectorAll('#audioModal .chip').forEach(c=>c.className='chip inactive-chip');
+  el.className = 'chip active-chip';
+  
+  if (mode === 'ai' && state.audios.length) {
+    const random = state.audios[Math.floor(Math.random()*state.audios.length)];
+    state.selectedAudioId = random.id;
+    document.querySelectorAll('#audioSelectList .audio-item').forEach((el,i)=>{
+      el.classList.toggle('selected-audio', state.audios[i]?.id === random.id);
+    });
+    toast('🤖 র‍্যান্ডম: ' + random.name, 'info');
+  }
+}
+
+// ==================== AI META ====================
+function setAI(el, service) {
+  state.aiService = service;
+  document.querySelectorAll('#panel-ai .chips-row .chip').forEach(c=>c.className='chip inactive-chip');
+  el.className = 'chip active-chip';
+}
+
+function saveApiKey() {
+  const key = document.getElementById('aiApiKey').value;
+  if (!key) { toast('API Key দিন!', 'error'); return; }
+  const s = getSettings();
+  s[state.aiService + 'Key'] = key;
+  saveSettings(s);
+  toast('💾 সেভ হয়েছে', 'success');
+}
+
+async function generateMeta() {
+  const topic = document.getElementById('videoTopic').value.trim();
+  const niche = document.getElementById('channelNiche').value.trim();
+  const lang = document.getElementById('titleLang').value;
+  const instruction = document.getElementById('aiInstruction').value.trim();
+  
+  if (!topic && !niche) { toast('ভিডিও বিষয় দিন!', 'error'); return; }
+  
+  const btn = document.getElementById('genBtn');
+  btn.innerHTML = '<div class="spinner"></div> জেনারেট হচ্ছে...';
+  btn.disabled = true;
+  
+  try {
+    const result = await callAI({ topic, niche, lang, instruction });
+    state.currentAiResult = result;
+    showAiResult(result);
+  } catch (err) {
+    toast('AI ত্রুটি: ' + err.message, 'error');
+  } finally {
+    btn.innerHTML = '✨ AI দিয়ে জেনারেট করুন';
+    btn.disabled = false;
+  }
+}
+
+async function callAI({ topic, niche, lang, instruction = '' }) {
+  const settings = getSettings();
+  const backend = getBackendUrl();
+  
+  const prompt = buildMetaPrompt(topic, niche, lang, instruction);
+  
+  const res = await fetch(`${backend}/api/ai-generate`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      service: state.aiService,
+      apiKey: settings[state.aiService + 'Key'] || document.getElementById('aiApiKey').value,
+      prompt,
+      lang
+    })
+  });
+  
+  if (!res.ok) throw new Error(await res.text());
+  return await res.json();
+}
+
+function buildMetaPrompt(topic, niche, lang, instruction) {
+  const langMap = { bn: 'বাংলা', en: 'English', hi: 'हिंदी' };
+  return `তুমি একজন YouTube SEO ও Viral Content বিশেষজ্ঞ।
+
+চ্যানেলের নিশ: ${niche || 'বিনোদন/লাইফস্টাইল'}
+ভিডিও বিষয়: ${topic}
+ভাষা: ${langMap[lang] || 'বাংলা'}
+${instruction ? 'বিশেষ নির্দেশ: ' + instruction : ''}
+
+নিচের JSON ফরম্যাটে উত্তর দাও (শুধু JSON, অন্য কিছু না):
+{
+  "title": "ক্লিকবেইট + SEO অপ্টিমাইজড টাইটেল, ইমোজি সহ, ৫০-৬০ অক্ষর",
+  "description": "৩-৪ লাইনের বর্ণনা, কীওয়ার্ড সমৃদ্ধ, ইমোজি সহ",
+  "hashtags": ["#হ্যাশট্যাগ১", "#hashtag2", ...মোট ১৫-২০টি, বাংলা ও ইংরেজি মিশিয়ে, ভাইরাল কীওয়ার্ড],
+  "tags": ["seo tag 1", "tag 2", ...মোট ২০-৩০টি YouTube SEO ট্যাগ, সব lowercase ইংরেজিতে],
+  "category": "বিষয়ের উপযুক্ত ক্যাটাগরি"
+}
+
+গুরুত্বপূর্ণ: প্রতিবার নতুন ও অনন্য টাইটেল/হ্যাশট্যাগ দাও। এক্সাম্পল কপি করবে না।`;
+}
+
+function showAiResult(result) {
+  document.getElementById('aiResultBox').style.display = '';
+  document.getElementById('resTitle').textContent = result.title || '';
+  document.getElementById('resDesc').textContent = result.description || '';
+  
+  document.getElementById('resHash').innerHTML = (result.hashtags || []).map(h =>
+    `<span class="tag tag-hash" onclick="copyText('${h}')">${h}</span>`
+  ).join('');
+  
+  document.getElementById('resTags').innerHTML = (result.tags || []).map(t =>
+    `<span class="tag tag-kw" onclick="copyText('${t}')">${t}</span>`
+  ).join('');
+}
+
+async function autoGenerateMeta(video) {
+  try {
+    const niche = document.getElementById('channelNiche').value || 'বিনোদন';
+    const result = await callAI({ topic: video.title, niche, lang: 'bn' });
+    video.meta = result;
+  } catch {}
+}
+
+async function generateMetaForVideo(videoId) {
+  const v = state.videos.find(v=>v.id===videoId);
+  if (!v) return;
+  toast('AI মেটা জেনারেট হচ্ছে...', 'info');
+  await autoGenerateMeta(v);
+  renderVideos();
+  toast('✅ মেটা জেনারেট হয়েছে', 'success');
+}
+
+async function bulkGenerateMeta() {
+  if (!state.videos.length) { toast('কোনো ভিডিও নেই!', 'error'); return; }
+  toast(`${state.videos.length}টি ভিডিওর মেটা জেনারেট হচ্ছে...`, 'info');
+  for (const v of state.videos) {
+    if (!v.meta) await autoGenerateMeta(v);
+  }
+  renderVideos();
+  toast('✅ সব ভিডিওর মেটা জেনারেট হয়েছে', 'success');
+}
+
+function regenerateMeta() {
+  document.getElementById('aiResultBox').style.display = 'none';
+  generateMeta();
+}
+
+function applyToSelected() {
+  if (!state.currentAiResult) return;
+  if (!state.selectedVideos.size) { toast('ভিডিও সিলেক্ট করুন!', 'error'); return; }
+  state.selectedVideos.forEach(id => {
+    const v = state.videos.find(v=>v.id===id);
+    if (v) v.meta = state.currentAiResult;
+  });
+  toast(`✅ ${state.selectedVideos.size}টি ভিডিওতে মেটা যোগ হয়েছে`, 'success');
+}
+
+function copyAllMeta() {
+  if (!state.currentAiResult) return;
+  const r = state.currentAiResult;
+  const text = `TITLE:\n${r.title}\n\nDESCRIPTION:\n${r.description}\n\nHASHTAGS:\n${(r.hashtags||[]).join(' ')}\n\nTAGS:\n${(r.tags||[]).join(', ')}`;
+  navigator.clipboard.writeText(text).then(()=>toast('📋 কপি হয়েছে', 'success')).catch(()=>toast('কপি ব্যর্থ', 'error'));
+}
+
+function copyText(t) {
+  navigator.clipboard.writeText(t).then(()=>toast('📋 ' + t, 'success')).catch(()=>{});
+}
+
+// ==================== UPLOAD ====================
+function connectYouTube() {
+  const clientId = document.getElementById('ytClientId')?.value || getSettings().ytClientId || '';
+  if (!clientId) { toast('Settings-এ YouTube Client ID দিন!', 'error'); switchTab('settings', document.querySelectorAll('.bottom-nav-item')[6]); return; }
+  
+  const scope = 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube';
+  const redirectUri = getBackendUrl() + '/auth/youtube/callback';
+  const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&response_type=code&access_type=offline`;
+  
+  window.open(authUrl, '_blank');
+  toast('YouTube কানেক্ট পেজ খুলছে...', 'info');
+}
+
+function connectDrive() {
+  const clientId = document.getElementById('driveClientId')?.value || getSettings().driveClientId || '';
+  if (!clientId) { toast('Settings-এ Drive Client ID দিন!', 'error'); return; }
+  toast('Google Drive কানেক্ট হচ্ছে...', 'info');
+}
+
+async function uploadSingleVideo(videoId) {
+  const v = state.videos.find(v=>v.id===videoId);
+  if (!v) return;
+  
+  const settings = getSettings();
+  toast('আপলোড শুরু হচ্ছে...', 'info');
+  log('uploadLog', `আপলোড: ${v.meta?.title || v.title}`);
+  
+  try {
+    const res = await fetch(`${getBackendUrl()}/api/upload`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        filepath: v.filepath,
+        title: v.meta?.title || v.title,
+        description: v.meta?.description || '',
+        tags: v.meta?.tags || [],
+        hashtags: v.meta?.hashtags || [],
+        privacy: document.getElementById('privacySetting').value,
+        categoryId: document.getElementById('categoryId').value,
+        deleteAfter: settings.deleteAfterUpload !== false
+      })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    
+    log('uploadLog', `✓ আপলোড সম্পন্ন: ${data.videoId}`, '');
+    
+    if (settings.deleteAfterUpload !== false) {
+      state.videos = state.videos.filter(v=>v.id!==videoId);
+      renderVideos();
+    }
+    
+    toast('✅ আপলোড সম্পন্ন!', 'success');
+  } catch (err) {
+    log('uploadLog', `✗ ত্রুটি: ${err.message}`, 'error');
+    toast('আপলোড ব্যর্থ: ' + err.message, 'error');
+  }
+}
+
+async function uploadSelectedVideos() {
+  if (!state.selectedVideos.size) { toast('ভিডিও সিলেক্ট করুন!', 'error'); return; }
+  
+  const ids = [...state.selectedVideos];
+  const progress = document.getElementById('uploadProgress');
+  const fill = document.getElementById('uploadProgressFill');
+  progress.style.display = '';
+  
+  let done = 0;
+  for (const id of ids) {
+    await uploadSingleVideo(id);
+    done++;
+    fill.style.width = `${(done/ids.length)*100}%`;
+  }
+  
+  clearSelection();
+  toast(`✅ ${done}টি ভিডিও আপলোড হয়েছে`, 'success');
+}
+
+async function exportToZip() {
+  if (!state.selectedVideos.size) { toast('ভিডিও সিলেক্ট করুন!', 'error'); return; }
+  
+  toast('ZIP তৈরি হচ্ছে...', 'info');
+  
+  try {
+    const ids = [...state.selectedVideos];
+    const filepaths = ids.map(id => state.videos.find(v=>v.id===id)?.filepath).filter(Boolean);
+    
+    const res = await fetch(`${getBackendUrl()}/api/export-zip`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        filepaths,
+        uploadToDrive: true,
+        driveFolderId: document.getElementById('driveFolderId')?.value || ''
+      })
+    });
+    
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    
+    if (data.driveUrl) {
+      toast('✅ Drive-এ ZIP আপলোড হয়েছে!', 'success');
+      window.open(data.driveUrl, '_blank');
+    } else if (data.downloadUrl) {
+      window.open(`${getBackendUrl()}${data.downloadUrl}`, '_blank');
+      toast('✅ ZIP ডাউনলোড শুরু হচ্ছে', 'success');
+    }
+  } catch (err) {
+    toast('ZIP ব্যর্থ: ' + err.message, 'error');
+  }
+}
+
+function updateUploadPanel() {
+  const el = document.getElementById('selectedForUpload');
+  if (!el) return;
+  const cnt = state.selectedVideos.size;
+  el.textContent = cnt ? `${cnt}টি ভিডিও সিলেক্ট করা আছে` : 'ভিডিও ট্যাব থেকে ভিডিও সিলেক্ট করুন';
+  el.style.color = cnt ? 'var(--accent3)' : 'var(--text2)';
+}
+
+// ==================== SCHEDULE ====================
+function renderSchedule() {
+  const list = document.getElementById('scheduleList');
+  list.innerHTML = state.scheduleSlots.map((s, i) => `
+    <div class="schedule-item">
+      <div class="schedule-time">${s.time}</div>
+      <div class="schedule-info">
+        <div class="schedule-label">${s.label}</div>
+        <div class="schedule-sub">র‍্যান্ডম ভিডিও আপলোড</div>
+      </div>
+      <button class="schedule-toggle ${s.on?'on':''}" onclick="toggleSlot(${i},this)"></button>
+      <button class="btn btn-sm btn-danger btn-icon" onclick="removeSlot(${i})" style="margin-left:4px">✕</button>
+    </div>
+  `).join('');
+  
+  renderDayBtns();
+}
+
+function toggleSlot(i, el) {
+  state.scheduleSlots[i].on = !state.scheduleSlots[i].on;
+  el.classList.toggle('on', state.scheduleSlots[i].on);
+  updateStats();
+}
+
+function removeSlot(i) {
+  state.scheduleSlots.splice(i, 1);
+  renderSchedule();
+}
+
+function addTimeSlot() { openModal('timeModal'); }
+
+function confirmAddSlot() {
+  const time = document.getElementById('newTimeInput').value;
+  const label = document.getElementById('newTimeLabel').value || time + 'এর পোস্ট';
+  state.scheduleSlots.push({ time, label, on: true });
+  renderSchedule();
+  updateStats();
+  closeModal('timeModal');
+  toast('⏰ সময় স্লট যোগ হয়েছে', 'success');
+}
+
+function toggleScheduler(el) {
+  state.schedulerOn = !state.schedulerOn;
+  el.classList.toggle('on', state.schedulerOn);
+  
+  if (state.schedulerOn) {
+    startScheduler();
+    toast('✅ শিডিউলার চালু হয়েছে', 'success');
+  } else {
+    stopScheduler();
+    toast('⏸ শিডিউলার বন্ধ', '');
+  }
+}
+
+let schedulerInterval = null;
+function startScheduler() {
+  schedulerInterval = setInterval(checkSchedule, 30000); // Check every 30s
+  checkSchedule();
+}
+
+function stopScheduler() {
+  if (schedulerInterval) clearInterval(schedulerInterval);
+}
+
+function checkSchedule() {
+  const now = new Date();
+  const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const currentDay = now.getDay();
+  
+  if (!state.activeDays.includes(currentDay)) return;
+  
+  const slot = state.scheduleSlots.find(s => s.on && s.time === currentTime);
+  if (slot && !slot._lastRun?.includes(now.toDateString())) {
+    slot._lastRun = now.toDateString();
+    autoUploadRandom(slot);
+  }
+}
+
+async function autoUploadRandom(slot) {
+  const available = state.videos.filter(v => !v._uploaded);
+  if (!available.length) {
+    log('scheduleLog', `কোনো ভিডিও নেই (${slot.time})`, 'error');
+    return;
+  }
+  
+  const maxPerDay = parseInt(document.getElementById('maxPerDay')?.value || 2);
+  const toUpload = available.sort(()=>Math.random()-0.5).slice(0, maxPerDay);
+  
+  log('scheduleLog', `${slot.time} - ${toUpload.length}টি ভিডিও আপলোড হচ্ছে...`, 'info');
+  
+  for (const v of toUpload) {
+    if (!v.meta) await autoGenerateMeta(v);
+    await uploadSingleVideo(v.id);
+    v._uploaded = true;
+    log('scheduleLog', `✓ আপলোড: ${v.meta?.title || v.title}`);
+  }
+}
+
+function renderDayBtns() {
+  document.querySelectorAll('.day-btn').forEach(btn => {
+    const day = parseInt(btn.dataset.day);
+    btn.classList.toggle('active', state.activeDays.includes(day));
+    btn.onclick = () => {
+      if (state.activeDays.includes(day)) state.activeDays = state.activeDays.filter(d=>d!==day);
+      else state.activeDays.push(day);
+      btn.classList.toggle('active', state.activeDays.includes(day));
+    };
+  });
+}
+
+// ==================== SETTINGS ====================
+function loadSettingsUI() {
+  const s = getSettings();
+  if (s.backendUrl) document.getElementById('backendUrl').value = s.backendUrl;
+  if (s.ytApiKey) document.getElementById('ytApiKey').value = s.ytApiKey;
+  if (s.ytClientId) document.getElementById('ytClientId').value = s.ytClientId;
+  if (s.driveClientId) document.getElementById('driveClientId').value = s.driveClientId;
+  if (s.geminiKey) document.getElementById('geminiKey').value = s.geminiKey;
+  if (s.grokKey) document.getElementById('grokKey').value = s.grokKey;
+  
+  const autoMute = document.getElementById('autoMute');
+  const autoAI = document.getElementById('autoAI');
+  const delAfter = document.getElementById('deleteAfterUpload');
+  const rmWatermark = document.getElementById('removeTikTokWatermark');
+  
+  if (autoMute) autoMute.checked = s.autoMute !== false;
+  if (autoAI) autoAI.checked = s.autoAI !== false;
+  if (delAfter) delAfter.checked = s.deleteAfterUpload !== false;
+  if (rmWatermark) rmWatermark.checked = s.removeTikTokWatermark !== false;
+  
+  // Sync checkbox UI
+  document.querySelectorAll('.checkbox-wrap input[type="checkbox"]').forEach(cb=>{
+    const check = cb.nextElementSibling;
+    if (check) check.textContent = cb.checked ? '✓' : '';
+  });
+}
+
+function saveAllSettings() {
+  const s = {
+    backendUrl: document.getElementById('backendUrl').value,
+    ytApiKey: document.getElementById('ytApiKey').value,
+    ytClientId: document.getElementById('ytClientId').value,
+    driveClientId: document.getElementById('driveClientId').value,
+    geminiKey: document.getElementById('geminiKey').value,
+    grokKey: document.getElementById('grokKey').value,
+    autoMute: document.getElementById('autoMute')?.checked,
+    autoAI: document.getElementById('autoAI')?.checked,
+    deleteAfterUpload: document.getElementById('deleteAfterUpload')?.checked,
+    removeTikTokWatermark: document.getElementById('removeTikTokWatermark')?.checked,
+    defaultFormat: document.getElementById('defaultFormat')?.value,
+  };
+  
+  if (s.backendUrl) localStorage.setItem('backendUrl', s.backendUrl);
+  saveSettings(s);
+  toast('✅ সব সেটিংস সেভ হয়েছে', 'success');
+}
+
+function resetPrompts() {
+  document.getElementById('titlePrompt').value = 'তুমি একজন YouTube SEO বিশেষজ্ঞ। নিচের ভিডিও বিষয়ের জন্য ক্লিকবেইট + SEO অপ্টিমাইজড বাংলা টাইটেল লেখো। টাইটেলটি হবে: আকর্ষণীয়, ইমোজি সহ, ৫০-৬০ ক্যারেক্টার।';
+  document.getElementById('hashPrompt').value = 'ভিডিওর জন্য ভাইরাল বাংলা ও ইংলিশ হ্যাশট্যাগ তৈরি করো। অন্তত ১৫টি হ্যাশট্যাগ দাও যা YouTube শর্টসে ভাইরাল হওয়ার সম্ভাবনা বেশি।';
+  toast('ডিফল্টে ফিরে গেছে');
+}
+
+function exportConfig() {
+  const s = getSettings();
+  const blob = new Blob([JSON.stringify(s, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'yt-auto-config.json';
+  a.click();
+  toast('Config export হয়েছে', 'success');
+}
+
+function importConfig() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = r => {
+      try {
+        const s = JSON.parse(r.result);
+        saveSettings(s);
+        loadSettingsUI();
+        toast('✅ Config import হয়েছে', 'success');
+      } catch { toast('JSON ত্রুটি', 'error'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ==================== MODAL ====================
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+// ==================== CHECKBOX UX ====================
+document.addEventListener('change', e => {
+  if (e.target.type === 'checkbox') {
+    const check = e.target.nextElementSibling;
+    if (check?.classList.contains('custom-check')) {
+      check.textContent = e.target.checked ? '✓' : '';
+    }
+  }
+});
+
+// ==================== DRIVE FOLDER TOGGLE ====================
+document.getElementById('scheduleSource').addEventListener('change', function() {
+  document.getElementById('driveFolderRow').style.display = this.value === 'drive' ? '' : 'none';
+});
+
+// ==================== INIT ====================
+function init() {
+  loadSettingsUI();
+  renderSchedule();
+  updateStats();
+  
+  // Load saved state
+  try {
+    const saved = localStorage.getItem('ytAutoState');
+    if (saved) {
+      const s = JSON.parse(saved);
+      if (s.videos) state.videos = s.videos;
+      if (s.audios) state.audios = s.audios;
+      if (s.scheduleSlots) state.scheduleSlots = s.scheduleSlots;
+    }
+  } catch {}
+  
+  // Auto-save state
+  setInterval(() => {
+    localStorage.setItem('ytAutoState', JSON.stringify({
+      videos: state.videos,
+      audios: state.audios,
+      scheduleSlots: state.scheduleSlots
+    }));
+  }, 10000);
+  
+  // Show demo audio if empty
+  if (!state.audios.length) {
+    state.audios = [
+      { id: 'demo1', name: 'ভাইরাল ওয়াজ #১', url: '', source: 'demo', duration: '0:45', size: '1.2MB' },
+      { id: 'demo2', name: 'রান্না ASMR Sound', url: '', source: 'demo', duration: '1:20', size: '2.1MB' },
+      { id: 'demo3', name: 'Islamic Nasheed', url: '', source: 'demo', duration: '2:10', size: '3.0MB' },
+    ];
+  }
+  
+  updateStats();
+  
+  // Check backend connection
+  fetch(getBackendUrl() + '/health').then(()=>{
+    document.getElementById('statusText').textContent = 'Connected';
+    document.getElementById('globalStatus').style.background = 'var(--success)';
+  }).catch(()=>{
+    document.getElementById('statusText').textContent = 'Offline';
+    document.getElementById('globalStatus').style.background = 'var(--warning)';
+  });
+}
+
+init();
+</script>
+</body>
+</html>
