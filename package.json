@@ -1,11 +1,9 @@
 {
   "name": "youtube-automation",
   "version": "1.0.0",
-  "description": "YouTube Automation Tool",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "cd app && npm install && npm run build && cp -r dist ../public"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
