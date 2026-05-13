@@ -1,3 +1,5 @@
+# This repo is not completed.Routes not Working.
+
 # 🎬 YouTube Automation Pro
 
 TikTok/YouTube থেকে বাল্ক ভিডিও ডাউনলোড করুন, AI দিয়ে SEO টাইটেল/হ্যাশট্যাগ জেনারেট করুন, এবং অটো আপলোড করুন।
